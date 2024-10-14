@@ -1,0 +1,7 @@
+<h1>Urls#show</h1>
+
+<p>Original URL: <%= @url.original_url %></p>
+<p>Shortened URL: <%= @url.short_url %></p>
+<p>Title of original URL <%= @url.title%> </p>
+
+<%= link_to 'Shorten another URL', new_url_path %> 

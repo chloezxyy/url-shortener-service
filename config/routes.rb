@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   root "urls#new"
-  resources :urls, only: [ :create, :show ]
+  resources :urls, only: [ :new, :create, :show ]
   get "/:short_url", to: "urls#redirect", as: :short
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

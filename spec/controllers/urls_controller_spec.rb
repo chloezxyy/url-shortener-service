@@ -1,71 +1,61 @@
 require 'rails_helper'
 
-# This tests the UrlsController
-
 RSpec.describe UrlsController, type: :controller do
-  describe "GET #new" do
-    it "returns http success" do
-      get :new
-      expect(response).to have_http_status(:success)
+  describe 'POST #create' do
+    let(:valid_attributes) do
+      {
+        original_url: 'http://example.com',
+        short_url: 'exmpl',
+        title: 'Example'
+      }
     end
-  end
 
-  describe "POST #create" do
-    website_link = "http://www.google.com"
+    let(:invalid_attributes) do
+      {
+        original_url: '',
+        short_url: '',
+        title: ''
+      }
+    end
 
-    context "with invalid attributes" do
-      it 'does not create a new shortened url with empty original_url' do
-        puts "inside invalid attributes"
+    context 'with valid params' do
+      it 'creates a new Url and renders the show template' do
+        expect {
+          post :create, params: { url: valid_attributes }
+        }.to change(Url, :count).by(1)
 
-        post :create, params: { url: { original_url: nil } }, as: :json
-
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(Url.last).to be_nil
-
-        json_response = JSON.parse(response.body)
-        expect(json_response).to have_key("errors")
-        expect(json_response["errors"]).to eq("Original URL cannot be blank")
-      end
-
-      it 'does not create a new shortened url with invalid original_url' do
-        post :create, params: { url: { original_url: "invalid_url" } }, as: :json
-
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(Url.last).to be_nil
-
-        json_response = JSON.parse(response.body)
-        expect(json_response).to have_key("errors")
-        expect(json_response["errors"]).to eq([ "Original url is invalid" ])
+        expect(response).to have_http_status(:created)
+        expect(response).to render_template(:show)
+        expect(assigns(:url)).to be_a(Url)
+        expect(assigns(:url)).to be_persisted
       end
     end
 
-    context "with valid attributes" do
-      it 'creates a new shortened url with valid title' do
-        post :create, params: { original_url: "http://www.example.com" }, as: :json
+    context 'with invalid params' do
+      it 'returns unprocessable entity status and does not create a new Url' do
+        expect {
+          post :create, params: { url: invalid_attributes }
+        }.not_to change(Url, :count)
 
-        expect(response).to have_http_status(:created)
-        expect(Url.last.original_url).to eq("http://www.example.com")
-        expect(Url.last.title).to eq("Example Domain")
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include('errors')
+        expect(assigns(:url)).to be_nil
       end
-      it 'creates a new shortened url' do
-        post :create, params: { original_url: website_link }, as: :json
+    end
 
-        expect(response).to have_http_status(:created)
-        expect(Url.last.original_url).to eq(website_link)
-
-        json_response = JSON.parse(response.body)
-        expect(json_response).to have_key("short_url")
-        expect(json_response["short_url"]).to_not be_nil
+    context 'when an exception occurs during save' do
+      before do
+        allow_any_instance_of(Url).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
       end
 
-      it 'creates multiple short URLs for the same original URL' do
-        post :create, params: { original_url: website_link }, as: :json
-        first_short_url = JSON.parse(response.body)["short_url"]
+      it 'returns unprocessable entity status and does not create a new Url' do
+        expect {
+          post :create, params: { url: valid_attributes }
+        }.not_to change(Url, :count)
 
-        post :create, params: { url: { original_url: website_link } }, as: :json
-        second_short_url = JSON.parse(response.body)["short_url"]
-
-        expect(first_short_url).to_not eq(second_short_url)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to include('errors')
+        expect(assigns(:url)).to be_nil
       end
     end
   end

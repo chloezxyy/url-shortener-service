@@ -38,10 +38,9 @@ class UrlsController < ApplicationController
       # Step 5: ensure that short_url is valid and save to the database
       begin
         if new_url.save!
-          puts "inside save"
-          render json: { original_url: new_url.original_url,  short_url: new_url.short_url }, status: :created
+          @url = new_url
+          render :show,  status: :created
         else
-
           render json: { errors: new_url.errors.full_messages }, status: :unprocessable_entity
           nil
         end
