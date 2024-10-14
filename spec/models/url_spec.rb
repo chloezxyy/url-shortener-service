@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Url, type: :model do
   it 'is valid with a url' do
-    url = Url.new(original_url: 'http://www.example.com', short_url: '123223456765434')
+    url = Url.new(original_url: 'http://www.example.com', short_url: '123223456765434', title: "example")
     expect(url).to be_valid
   end
 

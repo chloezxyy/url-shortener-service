@@ -4,27 +4,15 @@ class Url < ApplicationRecord
   has_many :visits, dependent: :destroy
 
   # validates the presence of the original_url and the format of the original_url
-  validates :original_url, presence: true, format: URI.regexp(%w[http https])
-  validates :short_url, presence: true, uniqueness: true,  length: { maximum: 15 }
-
-  # before saving the url, generate a short url and fetch the title of the page
-  before_save :generate_short_url, :fetch_title
+  validates :original_url, presence: true, format: { with: URI.regexp(%w[http https]) }
+  validates :short_url, presence: true, uniqueness: true, length: { maximum: 15 }
+  validates :title, presence: true
 
   private
 
-  # generate a random short url
+  # generate a random short url based on environment
   def generate_short_url
-    # Generate a unique identifier
-    unique_id = SecureRandom.random_number(1_000_000)
-    # Convert the unique identifier to a base62 string
-    self.short_url = Base62.encode(unique_id)
-  end
-
-  # fetch the title of the page
-  def fetch_title
-    response = HTTParty.get(self.original_url)
-    self.title = Nokogiri::HTML(response.body).title if response.success?
-  rescue
-    self.title = "Unknown Title"
+    base_url = "http://localhost:3000"
+    self.short_url = "#{base_url}/#{self.short_url}"
   end
 end
