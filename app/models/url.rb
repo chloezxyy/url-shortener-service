@@ -5,17 +5,18 @@ class Url < ApplicationRecord
 
   # validates the presence of the original_url and the format of the original_url
   validates :original_url, presence: true, format: { with: URI.regexp(%w[http https]) }
-  validates :short_url, presence: true, uniqueness: true, length: { maximum: 15 }
+  validates :short_url, presence: true, uniqueness: true
   validates :title, presence: true
 
   # should save the url after generating the short url
-  after_create :generate_short_url
+  before_create :generate_short_url
 
   private
 
   def generate_short_url
     base_url = ""
 
+    # TODO deploy
     if Rails.env.production?
       base_url = "https://shorten-url.herokuapp.com"
     else
