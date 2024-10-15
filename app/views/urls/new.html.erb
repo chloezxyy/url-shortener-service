@@ -1,6 +1,6 @@
-<h1>NotSoTinyUrl</h1>
 
-<span>Enter url that you want to shorten</span>
+
+<h2>Enter url that you want to shorten</h2>
 
 <%= form_with model: @url, url: urls_path, local: true do |form| %>
 
@@ -17,9 +17,8 @@
         </ul>
     </div>
     <% end %>
-    <%= form.label "Your long url" %>
-    <%= form.text_field :original_url, placeholder: "Enter url to shorten" %>
-
-    <%= form.submit "Shorten URL" %>
-
+    <div class="field form-group d-flex flex-row">
+        <%= form.text_field :original_url, placeholder: "Enter url to shorten", class:"mx-2 field form-control p-3" %>
+        <%= form.submit "Shorten URL", class: "btn btn-secondary ml-2" %>
+    </div>
 <% end %>

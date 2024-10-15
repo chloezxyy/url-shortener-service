@@ -1,0 +1,29 @@
+<h1>Report</h1>
+<p>This report displays the generated short URL and the respective timestamp which the url was clicked. </p>
+
+  <table class="table table-striped table-bordered table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th>Short URL</th>
+            <th>Geolocation</th>
+            <th>Timestamp</th>
+            <th>Click count</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% current_short_url = nil %>
+        <% @reports.each do |report| %>
+            <tr>
+                <td><%= report.short_url %></td>
+                <td><%= report.geolocation %></td>
+                <td><%= report.timestamp %></td>
+                <td>
+                    <% if current_short_url != report.short_url %>
+                        <% current_short_url = report.short_url %>
+                        <%= report.click_count %>
+                    <% end %>
+                </td>
+            </tr>
+        <% end %>
+    </tbody>
+</table>
