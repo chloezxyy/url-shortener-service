@@ -8,11 +8,20 @@ class Url < ApplicationRecord
   validates :short_url, presence: true, uniqueness: true, length: { maximum: 15 }
   validates :title, presence: true
 
+  # should save the url after generating the short url
+  after_create :generate_short_url
+
   private
 
-  # generate a random short url based on environment
   def generate_short_url
-    base_url = "http://localhost:3000"
+    base_url = ""
+
+    if Rails.env.production?
+      base_url = "https://shorten-url.herokuapp.com"
+    else
+      base_url = "http://localhost:3000"
+    end
+
     self.short_url = "#{base_url}/#{self.short_url}"
   end
 end

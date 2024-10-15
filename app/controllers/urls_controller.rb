@@ -2,6 +2,7 @@ require "securerandom"
 require "base62"
 require "nokogiri"
 require "open-uri"
+require "geocoder"
 
 class UrlsController < ApplicationController
   before_action :validate_url_params, only: :create
@@ -14,8 +15,6 @@ class UrlsController < ApplicationController
     begin
       # Step 1: retrieve the original_url from the form - original_url is valid and not empty
       original_url = params[:url][:original_url]
-
-      puts "original_url: #{original_url}"
 
       # Step 2: fetch the title of the page
       title = fetch_title(original_url)
@@ -56,27 +55,19 @@ class UrlsController < ApplicationController
     end
   end
 
-  # To display the shortened URL
-  def show
-    @url = Url.find(params[:id])
-
-    # check if url exists
-    if @url
-      render json: { original_url: @url.original_url, short_url: @url.short_url, title: @url.title }, status: :ok
-    else
-      render json: { errors: "URL not found" }, status: :not_found
-    end
-  end
-
   def redirect
     @url = Url.find_by(short_url: params[:short_url])
 
-    self.short_url = hash_url(self.original_url)
-
-    # check if url exists
     if @url
-      @url.increment!(:clicks)
-      redirect_to @url.original_url
+      redirect_to(@url.original_url, allow_other_host: true)
+      performed?
+
+      user_ip = request.remote_ip
+      geolocation = Geocoder.search(user_ip)
+      country_name = geolocation.first&.country || "Unknown"
+
+      # save details of the visit into visits table
+      Visit.create(url: @url, ip_address: user_ip, geolocation: country_name,)
     else
       render file: "#{Rails.root}/public/404.html", status: 404
     end
