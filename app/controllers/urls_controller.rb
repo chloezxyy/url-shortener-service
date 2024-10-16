@@ -15,9 +15,8 @@ class UrlsController < ApplicationController
     @url = Url.find_by(short_url: request.original_url)
     if @url
       redirect_to(@url.original_url, allow_other_host: true)
-    else
-      @error_message = "Short URL not found."
-      render :show
+    else StandardError => e
+      render file: "#{Rails.root}/public/404.html", status: 404
     end
   end
 
@@ -71,8 +70,6 @@ class UrlsController < ApplicationController
 
   def redirect
     @url = Url.find_by(short_url: params[:short_url])
-
-    puts "URL: #{@url}"
 
     if @url
       redirect_to(@url.original_url, allow_other_host: true)
