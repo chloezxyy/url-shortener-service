@@ -7,6 +7,10 @@ require "geocoder"
 class UrlsController < ApplicationController
   before_action :validate_url_params, only: :create
 
+  def index
+    redirect_to new_url_path
+  end
+
   def new
     @url = Url.new
   end

@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   root "urls#new"
-  resources :urls, only: [ :new, :create ]
+  resources :urls, only: [ :new, :create, :index ]
 
   get "urls/report", to: "reports#index"
   get "/:short_url", to: "urls#redirect", as: :redirect
