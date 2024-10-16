@@ -3,7 +3,7 @@ class ReportsController < ApplicationController
     begin
       @reports = Visit.joins(:url)
       .select("urls.short_url, visits.geolocation, visits.created_at AS timestamp, COUNT(visits.id) OVER (PARTITION BY urls.short_url) AS click_count, ROW_NUMBER() OVER (PARTITION BY urls.short_url ORDER BY visits.created_at) AS row_num")
-      .order("urls.short_url, visits.created_at DESC")
+      .order("visits.created_at DESC", "urls.short_url")
 
       render :index, status: :ok
     rescue => e
