@@ -11,14 +11,25 @@ class UrlsController < ApplicationController
     redirect_to new_url_path
   end
 
-  def show
+  # Redirect to the original URL (whether if user clicks or pastes the short URL)
+  def redirect
     @url = Url.find_by(short_url: request.original_url)
+
     if @url
       redirect_to(@url.original_url, allow_other_host: true)
-    else StandardError => e
+      performed?
+
+      user_ip = request.remote_ip
+      geolocation = Geocoder.search(user_ip)
+      country_name = geolocation.first&.country || "Unknown"
+
+      # save details of the visit into visits table
+      Visit.create(url: @url, ip_address: user_ip, geolocation: country_name,)
+    else
       render file: "#{Rails.root}/public/404.html", status: 404
     end
   end
+
 
   def new
     @url = Url.new
@@ -35,7 +46,9 @@ class UrlsController < ApplicationController
       # Step 3: Generate a unique short_url with retry limit
       short_url = nil
       loop do
-        short_url = Base62.encode(SecureRandom.random_number(1_000_000))
+        short_url = generate_unique_short_url
+        puts "short_url #{short_url}"
+
         break unless Url.find_by(short_url: short_url)
       end
 
@@ -68,24 +81,6 @@ class UrlsController < ApplicationController
     end
   end
 
-  def redirect
-    @url = Url.find_by(short_url: params[:short_url])
-
-    if @url
-      redirect_to(@url.original_url, allow_other_host: true)
-      performed?
-
-      user_ip = request.remote_ip
-      geolocation = Geocoder.search(user_ip)
-      country_name = geolocation.first&.country || "Unknown"
-
-      # save details of the visit into visits table
-      Visit.create(url: @url, ip_address: user_ip, geolocation: country_name,)
-    else
-      render file: "#{Rails.root}/public/404.html", status: 404
-    end
-  end
-
   private
 
   def validate_url_params
@@ -104,16 +99,16 @@ class UrlsController < ApplicationController
     "Unknown title"
   end
 
-  def generate_unique_short_url(original_url)
+  def generate_unique_short_url
     max_retries = 5
     attempts = 0
 
     begin
-      short_url = hash_url(original_url)
+      short_url = Base62.encode(SecureRandom.random_number(1_000_000))
       while Url.find_by(short_url: short_url)
         break if attempts >= max_retries
 
-        short_url = hash_url(original_url)
+        short_url = Base62.encode(SecureRandom.random_number(1_000_000))
         attempts += 1
       end
 
@@ -122,12 +117,5 @@ class UrlsController < ApplicationController
       Rails.logger.error "Failed to generate unique short URL: #{e.message}"
     end
     nil
-  end
-
-  def hash_url
-    result = Base62.encode(SecureRandom.random_number(1_000_000))
-    result
-  rescue StandardError => e
-    raise "Failed to generate short url: #{e.message}"
   end
 end

@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resources :urls, only: [ :new, :create, :index ]
 
   get "urls/report", to: "reports#index"
-  get "/:short_url", to: "urls#show", as: :redirect
+  get "/:short_url", to: "urls#redirect", as: :redirect
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
