@@ -11,6 +11,16 @@ class UrlsController < ApplicationController
     redirect_to new_url_path
   end
 
+  def show
+    @url = Url.find_by(short_url: request.original_url)
+    if @url
+      redirect_to(@url.original_url, allow_other_host: true)
+    else
+      @error_message = "Short URL not found."
+      render :show
+    end
+  end
+
   def new
     @url = Url.new
   end
@@ -61,6 +71,8 @@ class UrlsController < ApplicationController
 
   def redirect
     @url = Url.find_by(short_url: params[:short_url])
+
+    puts "URL: #{@url}"
 
     if @url
       redirect_to(@url.original_url, allow_other_host: true)
