@@ -1,6 +1,6 @@
 <h2>Results of NotSoTinyUrl</h2>
 
-<p>Original URL: <span><%= @url.original_url %></span></p>
-<p>Shortened URL: <span><%= link_to @url.short_url, redirect_path(@url.short_url), target: "_blank" %></span></p>
+<p>Target URL: <span><%= @url.original_url %></span></p>
+<p>Short URL: <span><%= link_to @url.short_url, redirect_path(@url.short_url), target: "_blank" %></span></p>
 <p>Title of website: <%= @url.title%> </p>
 <%= link_to 'Shorten another URL', new_url_path, class: "btn btn-dark" %> 
