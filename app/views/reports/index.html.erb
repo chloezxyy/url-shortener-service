@@ -14,7 +14,7 @@
         <% current_short_url = nil %>
         <% @reports.each do |report| %>
             <tr>
-                <td><%= report.short_url %></td>
+                <td><%= "#{root_url}#{report.short_url}"  %></td>
                 <td><%= report.geolocation %></td>
                 <td><%= report.timestamp %></td>
                 <td>

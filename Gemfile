@@ -21,9 +21,7 @@ gem "jbuilder"
 gem "base62", "~> 1.0"
 
 gem "geocoder"
-
 gem "nokogiri", "~> 1.15", ">= 1.15.4"
-gem "open-uri", "~> 0.3.0"
 
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]

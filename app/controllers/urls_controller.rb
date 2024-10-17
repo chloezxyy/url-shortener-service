@@ -1,7 +1,6 @@
 require "securerandom"
 require "base62"
 require "nokogiri"
-require "open-uri"
 require "geocoder"
 
 class UrlsController < ApplicationController
@@ -13,7 +12,13 @@ class UrlsController < ApplicationController
 
   # Redirect to the original URL (whether if user clicks or pastes the short URL)
   def redirect
-    @url = Url.find_by(short_url: request.original_url)
+    puts "BUTT"
+    puts "request.original_url #{request.original_url}"
+    puts "params[:short_url] #{params[:short_url]}"
+
+    @url = Url.find_by(short_url: params[:short_url])
+
+    puts "@url.inspect #{@url.inspect}"
 
     if @url
       redirect_to(@url.original_url, allow_other_host: true)
