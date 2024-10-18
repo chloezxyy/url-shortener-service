@@ -7,11 +7,10 @@
         <tr>
             <th>Short URL</th>
             <th>Last visited</th>
-            <th>Clink counts</th>
+            <th>Click counts</th>
         </tr>
     </thead>
     <tbody>
-        <% current_short_url = nil %>
         <% @click_counts.each do |item| %>
             <tr>
                 </td>
@@ -25,7 +24,7 @@
 
 <br />
 
-<h3>Url aggregated by timestamp and geolocation</h3>
+<h3>Url visited by timestamp and geolocation</h3>
 <table class="table table-striped table-bordered table-hover">
 <thead class="thead-dark">
     <tr>
@@ -35,7 +34,6 @@
     </tr>
 </thead>
 <tbody>
-    <% current_short_url = nil %>
     <% @reports.each do |report| %>
         <tr>
             </td>
