@@ -5,7 +5,52 @@ require "geocoder"
 require "open-uri"
 
 class UrlsController < ApplicationController
-  before_action :validate_url_params, only: :create
+  def new
+    @url = Url.new
+  end
+
+  def create
+    begin
+      # Step 1: retrieve the original_url from the form - original_url is valid and not empty
+      original_url = params[:url][:original_url]
+
+      # Step 2: fetch the title of the page
+      title = fetch_title(original_url)
+
+      # Step 3: Generate a unique short_url with retry limit
+      short_url = nil
+      loop do
+        short_url = generate_unique_short_url
+        break unless Url.find_by(short_url: short_url)
+      end
+
+      # Step 4: create a new Url object with the original_url, short_url, and title
+      @url = Url.new(original_url: original_url, short_url: short_url, title: title)
+
+      # display the error message if the url is not valid
+      unless @url.valid?
+        render :new, status: :unprocessable_entity
+        return
+      end
+      # Step 5: ensure that short_url is valid and save to the database
+      begin
+        if @url.save!
+          render :show,  status: :created
+        else
+          render json: { errors: @url.errors.full_messages }, status: :unprocessable_entity
+          nil
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        render json: { errors: @url.errors.full_messages }, status: :unprocessable_entity
+        nil
+      end
+
+      # To handle any exceptions
+    rescue StandardError => e
+      render json: { errors: e.message }, status: :internal_server_error
+      nil
+    end
+  end
 
   def index
     redirect_to new_url_path
@@ -30,63 +75,7 @@ class UrlsController < ApplicationController
     end
   end
 
-
-  def new
-    @url = Url.new
-  end
-
-  def create
-    begin
-      # Step 1: retrieve the original_url from the form - original_url is valid and not empty
-      original_url = params[:url][:original_url]
-
-      # Step 2: fetch the title of the page
-      title = fetch_title(original_url)
-
-      # Step 3: Generate a unique short_url with retry limit
-      short_url = nil
-      loop do
-        short_url = generate_unique_short_url
-        break unless Url.find_by(short_url: short_url)
-      end
-
-      # Step 4: create a new Url object with the original_url, short_url, and title
-      new_url = Url.new(original_url: original_url, short_url: short_url, title: title)
-
-      # check if new_url is valid
-      unless new_url.valid?
-        render json: { errors: new_url.errors.full_messages }, status: :unprocessable_entity
-        return
-      end
-      # Step 5: ensure that short_url is valid and save to the database
-      begin
-        if new_url.save!
-          @url = new_url
-          render :show,  status: :created
-        else
-          render json: { errors: new_url.errors.full_messages }, status: :unprocessable_entity
-          nil
-        end
-      rescue ActiveRecord::RecordInvalid => e
-        render json: { errors: new_url.errors.full_messages }, status: :unprocessable_entity
-        nil
-      end
-
-      # To handle any exceptions
-    rescue StandardError => e
-      render json: { errors: e.message }, status: :internal_server_error
-      nil
-    end
-  end
-
   private
-
-  def validate_url_params
-    original_url = params[:url][:original_url]
-    if original_url.nil? || original_url.empty?
-      render json: { errors: "Original URL cannot be blank" }, status: :unprocessable_entity
-    end
-  end
 
   def fetch_title(website_link)
     html = URI.open(website_link)
