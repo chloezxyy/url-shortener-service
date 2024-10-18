@@ -1,24 +1,17 @@
-
-
 <h2>Enter url that you want to shorten</h2>
 
-<%= form_with model: @url, url: urls_path, local: true do |form| %>
-
- <% if @url.errors.any? %>
-    <%= @url.errors.any? %>
-
-    <%# TODO display error validation msgs %>
-    <div id="error_explanation">
-        <h2><%= pluralize(@url.errors.count, "error") %> prohibited this URL from being saved:</h2>
-        <ul>
-        <% @url.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-        <% end %>
-        </ul>
+<%= form_with model: @url, url: urls_path, local: true do |form|%>
+    <div class="field form-group">
+        <%= form.text_field :original_url, placeholder: "Enter url to shorten", class:"field form-control p-3" %>
+        <div class="d-flex flex-column" style="height: 10px;">   
+            <% if @url.errors.any? %>
+                <% @url.errors.full_messages_for(:original_url).each do |message| %>
+                    <span class="text-danger"><%= message %></span>
+                <% end %>
+            <% end %>
+        </div>
     </div>
-    <% end %>
-    <div class="field form-group d-flex flex-row">
-        <%= form.text_field :original_url, placeholder: "Enter url to shorten", class:"mx-2 field form-control p-3" %>
-        <%= form.submit "Shorten URL", class: "btn btn-secondary ml-2" %>
+    <div  style="display: flex; justify-content: flex-end;">
+        <%= form.submit "Shorten URL", class: "btn btn-secondary mt-2 p-3", style:"place-items: end;"  %>
     </div>
 <% end %>
