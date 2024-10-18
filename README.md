@@ -71,9 +71,11 @@ Option 3: Click on the newly generated short url with embedded link and be redir
 This is app is deployed using heroku. Following this guide: https://devcenter.heroku.com/articles/getting-started-with-rails7#store-the-app-in-git
 
 ### Technical Implementation
-Please refer to this https://urlshortenerchloe-3673a78dad3b.herokuapp.com/1cZc for an indepth technical writeup.
+Please refer to this (Assignment 1) https://urlshortenerchloe-3673a78dad3b.herokuapp.com/1cZc for an indepth technical writeup.
 
 ### Assignment 2 - Web core vitals
 .
 └── web-core-vitals
    └── 5-cwv.html       # List of issues fixed
+
+Details can be found in this (Assignment 2) https://urlshortenerchloe-3673a78dad3b.herokuapp.com/1cZc as well
