@@ -1,4 +1,4 @@
-## url-shortener-service
+## Assignment 1: url-shortener-service
 This project is a URL shortener service that allows users to shorten long URLs into more manageable, short URLs. The service is built using Ruby on Rails and uses PostgreSQL as the database. The application is containerized using Docker and can be deployed on Heroku.
 
 Deployed link: https://urlshortenerchloe-3673a78dad3b.herokuapp.com/
@@ -72,3 +72,8 @@ This is app is deployed using heroku. Following this guide: https://devcenter.he
 
 ### Technical Implementation
 Please refer to this https://urlshortenerchloe-3673a78dad3b.herokuapp.com/1cZc for an indepth technical writeup.
+
+### Assignment 2 - Web core vitals
+.
+└── web-core-vitals
+   └── 5-cwv.html       # List of issues fixed
