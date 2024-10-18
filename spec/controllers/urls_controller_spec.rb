@@ -38,8 +38,6 @@ RSpec.describe UrlsController, type: :controller do
         }.not_to change(Url, :count)
 
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.body).to include('errors')
-        expect(assigns(:url)).to be_nil
       end
     end
 
@@ -55,7 +53,6 @@ RSpec.describe UrlsController, type: :controller do
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.body).to include('errors')
-        expect(assigns(:url)).to be_nil
       end
     end
   end

@@ -1,13 +1,41 @@
 class ReportsController < ApplicationController
+  # To retrieve two tables, one with the most visited URLs and another with the number of clicks per URL
   def index
-    begin
-      @reports = Visit.joins(:url)
-      .select("urls.short_url, visits.geolocation, visits.created_at AS timestamp, COUNT(visits.id) OVER (PARTITION BY urls.short_url) AS click_count, ROW_NUMBER() OVER (PARTITION BY urls.short_url ORDER BY visits.created_at) AS row_num")
-      .order("visits.created_at DESC", "urls.short_url")
+    @reports = aggregate_by_urls
+    @click_counts = aggregate_by_clicks
+    render :index, status: :ok
+  rescue StandardError => e
+    render json: { error: e.message }, status: :internal_server_error
+  end
 
-      render :index, status: :ok
-    rescue => e
-      render json: { errors: "Unable to display report", message: e }, status: :not_found
-    end
+  def analytics_url
+    @reports = aggregate_by_urls
+    render :index, status: :ok
+  rescue StandardError => e
+    puts "URL"
+    render json: { error: e.message }, status: :internal_server_error
+  end
+
+  def click_count
+    @click_counts = aggregate_by_clicks
+    render :index, status: :ok
+  rescue StandardError => e
+    puts "CLICK COUNT"
+    render json: { error: e.message }, status: :internal_server_error
+  end
+
+  private
+
+  def aggregate_by_clicks
+    Visit.joins(:url)
+      .select("urls.short_url, MAX(visits.created_at) AS last_visit, COUNT(visits.id) AS total_clicks")
+      .group("urls.short_url")
+      .order("last_visit DESC")
+  end
+
+  def aggregate_by_urls
+    Visit.joins(:url)
+    .select("urls.short_url, visits.geolocation, visits.created_at AS timestamp")
+    .order("timestamp DESC")
   end
 end
