@@ -51,9 +51,16 @@ Please refer to this (Assignment 1) https://urlshortenerchloe-3673a78dad3b.herok
 
 ![alt text](image.png)
 
-If user tries to input an invalid url or if url is blank. A valid url contains 'http/https'
-
+#### Error handling
+If user tries to input an a blank url. 
 ![alt text](image-2.png)
+
+If user tries to input an invalid url.
+![alt text](image-4.png)
+
+If user inputs another type of invalid URL that. A valid url contains 'http/https'
+![alt text](image-5.png)
+
 
 ## Short url 
 
@@ -71,6 +78,11 @@ Option 3: Click on the newly generated short url with embedded link and be redir
 ## Report page 
 ![alt text](image-1.png)
 
+#### Click count based on url visited
+![alt text](image-6.png)
+
+#### Url visited by timestamp and geolocation
+![alt text](image-7.png)
 
 
 # Assignment 2 - Web core vitals
