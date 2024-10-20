@@ -12,7 +12,6 @@ class ReportsController < ApplicationController
     @reports = aggregate_by_urls
     render :index, status: :ok
   rescue StandardError => e
-    puts "URL"
     render json: { error: e.message }, status: :internal_server_error
   end
 
@@ -20,7 +19,6 @@ class ReportsController < ApplicationController
     @click_counts = aggregate_by_clicks
     render :index, status: :ok
   rescue StandardError => e
-    puts "CLICK COUNT"
     render json: { error: e.message }, status: :internal_server_error
   end
 

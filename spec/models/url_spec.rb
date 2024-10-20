@@ -19,9 +19,15 @@ RSpec.describe Url, type: :model do
     expect(url.errors[:original_url]).to include("can't be blank")
   end
 
-  it 'is invalid with a wrong url' do
-    url = Url.new(original_url: '.example')
+  it 'is invalid with a valid url but does not match the valid format' do
+    url = Url.new(original_url: 'www.google.com')
     url.valid?
-    expect(url.errors[:original_url]).to include("is invalid")
+    expect(url.errors[:original_url]).to include("does not match the required http/https format")
+  end
+
+  it 'is invalid url' do
+    url = Url.new(original_url: 'www.goo gle.com')
+    url.valid?
+    expect(url.errors[:original_url]).to include("is not a valid URL")
   end
 end

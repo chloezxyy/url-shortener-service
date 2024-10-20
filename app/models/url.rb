@@ -3,8 +3,22 @@ class Url < ApplicationRecord
   # each url is associated with many Visit object, if the url is destroyed, all of its associated visits are destroyed
   has_many :visits, dependent: :destroy
 
-  # validates the presence of the original_url and the format of the original_url
-  validates :original_url, presence: true, format: { with: URI.regexp(%w[http https]) }
+  validates :original_url, presence: true
+  validate :validate_original_url_format
+
   validates :short_url, presence: true, uniqueness: true
   validates :title, presence: true
+
+  private
+
+  def validate_original_url_format
+    begin
+      uri = URI.parse(original_url)
+      unless uri.is_a?(URI::HTTP) && uri.host.present?
+        errors.add(:original_url, "does not match the required http/https format")
+      end
+    rescue URI::InvalidURIError
+      errors.add(:original_url, "is not a valid URL")
+    end
+  end
 end
