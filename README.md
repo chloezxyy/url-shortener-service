@@ -42,7 +42,7 @@ Please refer to this (Assignment 1) https://urlshortenerchloe-3673a78dad3b.herok
   - views: Contains the HTML templates for the application
     - reports: Contains the HTML templates for the reports page
     - urls: Contains the HTML templates for the URL shortening service
-- docs: Contains the technical writeup for the application
+  - db: Contains the schema
 - spec: Contains the tests for the application
 - README.md: *IMPT* Please refer to this file for instructions on how to run the application
 
