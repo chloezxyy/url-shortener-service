@@ -44,7 +44,7 @@ Please refer to this (Assignment 1) https://urlshortenerchloe-3673a78dad3b.herok
     - urls: Contains the HTML templates for the URL shortening service
   - db: Contains the schema
 - spec: Contains the tests for the application
-- README.md: *IMPT* Please refer to this file for instructions on how to run the application
+- README.md: *IMPT* Please refer to this file on the technical details on Assignment 1 and Assignment 2.
 
 
 ## Landing page / Shorten
