@@ -22,7 +22,7 @@ gem "jbuilder"
 # gem "redis", ">= 4.0.1"
 gem "base62", "~> 1.0"
 
-gem "geocoder", "~> 1.3", ">= 1.3.7"
+gem "geocoder", "~> 1.8"
 gem "nokogiri", "~> 1.15", ">= 1.15.4"
 gem "open-uri"
 
