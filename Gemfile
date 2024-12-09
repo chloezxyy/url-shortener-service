@@ -23,7 +23,7 @@ gem "jbuilder"
 gem "base62", "~> 1.0"
 
 gem "geocoder", "~> 1.3", ">= 1.3.7"
-gem "nokogiri", "~> 1.15", ">= 1.15.4"
+gem "nokogiri", "~> 1.17"
 gem "open-uri"
 
 
